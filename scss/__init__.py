@@ -1023,23 +1023,15 @@ class Scss(object):
                                 i_codestr = None
                                 full_path = os.path.realpath(os.path.join(path, basepath, dirname))
                                 if full_path not in load_paths:
-                                    try:
-                                        full_filename = os.path.join(full_path, '_'+filename+'.scss')
-                                        i_codestr = open(full_filename).read()
-                                    except:
+                                    tmpls = ('_%s.scss', '%s.scss', '_%s', '%s')
+                                    for full_filename in (os.path.join(full_path, tmpl % filename) for tmpl in tmpls):
                                         try:
-                                            full_filename = os.path.join(full_path, filename+'.scss')
-                                            i_codestr = open(full_filename).read()
+                                            f = open(full_filename)
+                                            i_codestr = f.read()
+                                            f.close()
+                                            break
                                         except:
-                                            try:
-                                                full_filename = os.path.join(full_path, '_'+filename)
-                                                i_codestr = open(full_filename).read()
-                                            except:
-                                                try:
-                                                    full_filename = os.path.join(full_path, filename)
-                                                    i_codestr = open(full_filename).read()
-                                                except:
-                                                    pass
+                                            pass
                                     if i_codestr is not None:
                                         break
                                     else:
