@@ -47,8 +47,6 @@ __license__ = LICENSE
 # Configuration:
 import os
 PROJECT_ROOT = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
-# Sass @import load_paths:
-LOAD_PATHS = [os.path.join(PROJECT_ROOT, 'sass/frameworks/')]
 # Assets path, where new sprite files are created:
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static/')
 # Assets path, where new sprite files are created:
@@ -464,7 +462,13 @@ class Scss(object):
     # configuration:
     construct = 'self'
 
-    def __init__(self):
+    def __init__(self, load_paths=None):
+        self.load_paths = [os.path.join(PROJECT_ROOT, 'sass/frameworks/')]
+        if load_paths is not None:
+            for path_param in load_paths:
+                if path_param not in self.load_paths:
+                    self.load_paths.append(path_param)
+
         self.scss_files = {}
         self.scss_vars = _default_scss_vars.copy()
         self.scss_opts = _default_scss_opts.copy()
@@ -1014,7 +1018,7 @@ class Scss(object):
                         dirname = os.path.dirname(name)
                         load_paths = []
                         i_codestr = None
-                        for path in [ './' ] + LOAD_PATHS:
+                        for path in [ './' ] + self.load_paths:
                             for basepath in [ './', os.path.dirname(rule[PATH]) ]:
                                 i_codestr = None
                                 full_path = os.path.realpath(os.path.join(path, basepath, dirname))
@@ -5561,7 +5565,7 @@ def main():
     (options, args) = parser.parse_args()
 
     # General runtime configuration
-    global LOAD_PATHS, VERBOSITY, STATIC_ROOT, ASSETS_ROOT
+    global VERBOSITY, STATIC_ROOT, ASSETS_ROOT
     VERBOSITY = 0
 
     if options.time:
@@ -5570,10 +5574,6 @@ def main():
         STATIC_ROOT = options.static_root
     if options.assets_root is not None:
         ASSETS_ROOT = options.assets_root
-    if options.load_paths is not None:
-        for path_param in options.load_paths:
-            if path_param not in LOAD_PATHS:
-                LOAD_PATHS.append(path_param)
 
     # Execution modes
     if options.test:
@@ -5595,7 +5595,7 @@ def main():
         except ImportError:
             pass
 
-        css = Scss()
+        css = Scss(load_paths=options.load_paths)
         context = css._scss_vars
         options = css._scss_opts
         rule = [ None, None, '', set(), context, options, '', [], './', False, None ]
@@ -5700,7 +5700,7 @@ def main():
         else:
             output = sys.stdout
 
-        css = Scss()
+        css = Scss(load_paths=options.load_paths)
         if args:
             for path in args:
                 finput = open(path, 'rt')
