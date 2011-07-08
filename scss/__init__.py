@@ -271,6 +271,18 @@ _KNOWN_FUNCTIONS = (
     'rotate',
     'to',
     'url',
+    # CSS Transformations, via https://developer.mozilla.org/en/CSS/transform
+    'matrix',
+    'rotate',
+    'scale',
+    'scaleX',
+    'scaleY',
+    'skew',
+    'skewX',
+    'skewY',
+    'translate',
+    'translateX',
+    'translateY',
 )
 
 _safe_strings = {
