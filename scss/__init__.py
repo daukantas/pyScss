@@ -1653,8 +1653,6 @@ class Scss(object):
         if compress:
             # zero units out (i.e. 0px or 0em -> 0):
             cont = _zero_units_re.sub('0', cont)
-            # remove zeros before decimal point (i.e. 0.3 -> .3)
-            cont = _zero_re.sub('.', cont)
         return cont
 
 import hashlib
