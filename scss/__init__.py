@@ -345,7 +345,12 @@ _expr_glob_re = re.compile(r'''
 
 _ml_comment_re = re.compile(r'\/\*(.*?)\*\/', re.DOTALL)
 _sl_comment_re = re.compile(r'(?<!\w{2}:)\/\/.*')
-_zero_units_re = re.compile(r'\b0(' + '|'.join(map(re.escape, _units)) + r')(?!\w)', re.IGNORECASE)
+
+# Preserve % sign when stripping units. There are technically four official number types in CSS:
+# <integer> (unitless), <number> (unitless), <percentage> (%), and <length> (em, px, etc.).
+# There are times when built-in functions behave differently given <number> v. <percentage>,
+# and all argument types must match.
+_zero_units_re = re.compile(r'\b0(' + '|'.join([ re.escape(u) for u in _units if u != '%' ]) + r')(?!\w)', re.IGNORECASE)
 _zero_re = re.compile(r'\b0\.(?=\d)')
 
 _interpolate_re = re.compile(r'(#\{\s*)?(\$[-\w]+)(?(1)\s*\})')
