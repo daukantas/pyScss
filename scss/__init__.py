@@ -3587,10 +3587,6 @@ class ColorValue(Value):
     def __str__(self):
         type = self.type
         c = self.value
-        r, g, b = to_str(c[0]), to_str(c[1]), to_str(c[2])
-        _, _, r = r.partition('.')
-        _, _, g = g.partition('.')
-        _, _, b = b.partition('.')
         if c[3] == 1:
             return '#%02x%02x%02x' % (round(c[0]), round(c[1]), round(c[2]))
         return 'rgba(%d, %d, %d, %s)' % (round(c[0]), round(c[1]), round(c[2]), to_str(c[3]))
